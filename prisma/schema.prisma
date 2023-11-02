@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String   @id @default(uuid())
+  fullName       String   @map("full_name")
+  email          String   @unique
+  phoneNumber    String   @map("phone_number")
+  hashedPassword String
+  role           String @default("user")
+  imgSrc String?
+  address        String?
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  Reservation Reservation[]
+
+  @@map("users")
+}
+
+model Listing {
+  id          String        @id @default(uuid())
+  name        String        @unique
+  description String?
+  imgUrl      String
+  price       Int?
+  comments    String?
+  category    String?
+  createdAt   DateTime      @default(now()) @map("created_at")
+  updatedAt   DateTime      @updatedAt @map("updated_at")
+  Reservation Reservation[]
+
+  @@map("listings")
+}
+
+model Reservation {
+  id         String   @id @default(uuid())
+  startDate  DateTime
+  endDate    DateTime
+  status     String?   @default("pending") @map("appointment_status")
+  totalPrice Int?
+  createdAt  DateTime @default(now()) @map("created_at")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
+
+  listing   Listing? @relation(fields: [listingId], references: [id])
+  listingId String
+
+  @@map("reservations")
+}
+
+model Admin {
+  id             String @id @default(uuid())
+  fullName       String @map("full_name")
+  email          String @unique
+  phoneNumber    String @map("phone_number")
+  hashedPassword String
+  role           String
+  imgSrc String?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("admins")
+}
+
+model SuperAdmin {
+  id             String @id @default(uuid())
+  email          String @unique
+  hashedPassword String
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("super_admin")
+}
