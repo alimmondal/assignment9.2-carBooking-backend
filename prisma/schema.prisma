@@ -33,26 +33,16 @@ model Listing {
   description String?
   imgUrl      String
   price       Int?
+  comments Json?
   category    String?
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
-
-  reviews   Reviews? @relation(fields: [reviewsId], references: [id])
-  reviewsId String?
 
   Reservation Reservation[]
   @@map("listings")
 }
 
-model Reviews {
-  id        String    @id @default(uuid())
-  comment      String
-  createdAt DateTime  @default(now()) @map("created_at")
-  updatedAt DateTime  @updatedAt @map("updated_at")
-  Listing   Listing[]
 
-  @@map("reviews")
-}
 
 model Reservation {
   id         String   @id @default(uuid())

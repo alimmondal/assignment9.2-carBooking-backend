@@ -11,9 +11,17 @@ import {
 } from './Listings.constants'
 import { ICarListFilterRequest } from './Listings.interface'
 
-const createListing = async (listing: Listing): Promise<Listing> => {
+const createListing = async (payload: Listing): Promise<Listing> => {
+  payload.comments = JSON.stringify(payload.comments)
+
+  const adjustedPayload = {
+    ...payload,
+    comments: {
+      value: payload.comments,
+    },
+  }
   const result = await prisma.listing.create({
-    data: listing,
+    data: adjustedPayload,
   })
   return result
 }
@@ -62,9 +70,6 @@ const getAllListings = async (
     andConditions.length > 0 ? { AND: andConditions } : {}
 
   const result = await prisma.listing.findMany({
-    include: {
-      reviews: true,
-    },
     where: whereConditions,
     skip,
     take: limit,
@@ -94,48 +99,62 @@ const getSingleListing = async (id: string): Promise<Listing | null> => {
     where: {
       id: id,
     },
-    include: {
-      reviews: true,
-    },
   })
   return result
 }
 
-// const updateCommentInListing = async (
-//   appointmentId: string,
-//   bookData: Reviews,
-// ): Promise<any> => {
-//   const appointment = await prisma.listing.findUnique({
-//     where: {
-//       id: appointmentId,
-//     },
-//   })
+const updateComment = async (
+  appointmentId: string,
+  payload: Listing,
+): Promise<any> => {
+  payload.comments = JSON.stringify(payload.comments)
 
-//   if (!appointment) {
-//     throw new Error('Appointment does not exist')
-//   }
+  // const adjustedPayload = {
+  //   ...payload,
+  //   comments: {
+  //     value: payload.comments,
+  //   },
+  // }
 
-//   const updatedComment = await prisma.listing.update({
-//     where: {
-//       id: appointmentId,
-//     },
-//     data: {
-//       data: bookData,
-//     },
-//   })
+  const appointment = await prisma.listing.findUnique({
+    where: {
+      id: appointmentId,
+    },
+  })
 
-//   return updatedComment
-// }
+  if (!appointment) {
+    throw new Error('Appointment does not exist')
+  }
+
+  const updatedComment = await prisma.listing.update({
+    where: {
+      id: appointmentId,
+    },
+    data: {
+      comments: payload,
+    },
+  })
+
+  return updatedComment
+}
 
 const updateListing = async (
   id: string,
-  listings: Listing,
+  payload: Listing,
 ): Promise<Listing> => {
+  payload.comments = JSON.stringify(payload.comments)
+
+  const adjustedPayload = {
+    ...payload,
+    comments: {
+      value: payload.comments,
+    },
+  }
   const result = await prisma.listing.update({
     where: {
       id: id,
     },
-    data: listings,
+    data: adjustedPayload,
   })
   return result
 }
@@ -153,7 +172,7 @@ export const listingServices = {
   createListing,
   getAllListings,
   getSingleListing,
-  // updateCommentInListing,
+  updateComment,
   updateListing,
   deleteListing,
 }

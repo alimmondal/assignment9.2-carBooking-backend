@@ -1,36 +1,31 @@
-import { Prisma, ReviewAndRating } from '@prisma/client';
-import { paginationHelpers } from '../../../helpers/paginationHelper';
-import { IGenericResponse } from '../../../interfaces/common';
-import { IPaginationOptions } from '../../../interfaces/pagination';
-import prisma from '../../../shared/prisma';
+import { Prisma, Reviews } from '@prisma/client'
+import { paginationHelpers } from '../../../helpers/paginationHelper'
+
+import prisma from '../../../shared/prisma'
+import { IGenericResponse } from '../../interfaces/common'
+import { IPaginationOptions } from '../../interfaces/pagination'
 import {
   reviewRatingRelationalFields,
   reviewRatingRelationalFieldsMapper,
   reviewRatingSearchableFields,
-} from './reviewRating.constants';
-import { IReviewRatingFilterRequest } from './reviewRating.interface';
+} from './reviewRating.constants'
+import { IReviewRatingFilterRequest } from './reviewRating.interface'
 
-const insertIntoDB = async (
-  data: ReviewAndRating
-): Promise<ReviewAndRating> => {
-  const result = await prisma.reviewAndRating.create({
-    data,
-    include: {
-      user: true,
-      book: true,
-    },
-  });
-  return result;
-};
+const insertIntoDB = async (payload: Reviews): Promise<Reviews> => {
+  const result = await prisma.reviews.create({
+    data: payload,
+  })
+  return result
+}
 
 const getAllFromDB = async (
   filters: IReviewRatingFilterRequest,
-  options: IPaginationOptions
-): Promise<IGenericResponse<ReviewAndRating[]>> => {
-  const { limit, page, skip } = paginationHelpers.calculatePagination(options);
-  const { searchTerm, ...filterData } = filters;
+  options: IPaginationOptions,
+): Promise<IGenericResponse<Reviews[]>> => {
+  const { limit, page, skip } = paginationHelpers.calculatePagination(options)
+  const { searchTerm, ...filterData } = filters
 
-  const andConditions = [];
+  const andConditions = []
 
   if (searchTerm) {
     andConditions.push({
@@ -40,7 +35,7 @@ const getAllFromDB = async (
           mode: 'insensitive',
         },
       })),
-    });
+    })
   }
 
   if (Object.keys(filterData).length > 0) {
@@ -51,26 +46,26 @@ const getAllFromDB = async (
             [reviewRatingRelationalFieldsMapper[key]]: {
               id: (filterData as any)[key],
             },
-          };
+          }
         } else {
           return {
             [key]: {
               equals: (filterData as any)[key],
             },
-          };
+          }
         }
       }),
-    });
+    })
   }
 
-  const whereConditions: Prisma.ReviewAndRatingWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {};
+  const whereConditions: Prisma.ReviewsWhereInput =
+    andConditions.length > 0 ? { AND: andConditions } : {}
 
-  const result = await prisma.reviewAndRating.findMany({
-    include: {
-      user: true,
-      book: true,
-    },
+  const result = await prisma.reviews.findMany({
+    // include: {
+    //   listing: true,
+    //   book: true,
+    // },
     where: whereConditions,
     skip,
     take: limit,
@@ -80,10 +75,10 @@ const getAllFromDB = async (
         : {
             id: 'desc',
           },
-  });
-  const total = await prisma.reviewAndRating.count({
+  })
+  const total = await prisma.reviews.count({
     where: whereConditions,
-  });
+  })
 
   return {
     meta: {
@@ -92,51 +87,51 @@ const getAllFromDB = async (
       limit,
     },
     data: result,
-  };
-};
+  }
+}
 
-const getByIdFromDB = async (id: string): Promise<ReviewAndRating | null> => {
-  const result = await prisma.reviewAndRating.findUnique({
+const getByIdFromDB = async (id: string): Promise<Reviews | null> => {
+  const result = await prisma.reviews.findUnique({
     where: {
       id,
     },
-    include: {
-      user: true,
-      book: true,
-    },
-  });
-  return result;
-};
+    // include: {
+    //   user: true,
+    //   book: true,
+    // },
+  })
+  return result
+}
 
 const updateIntoDB = async (
   id: string,
-  payload: Partial<ReviewAndRating>
-): Promise<ReviewAndRating> => {
-  const result = await prisma.reviewAndRating.update({
+  payload: Partial<Reviews>,
+): Promise<Reviews> => {
+  const result = await prisma.reviews.update({
     where: {
       id,
     },
     data: payload,
-    include: {
-      user: true,
-      book: true,
-    },
-  });
-  return result;
-};
+    // include: {
+    //   user: true,
+    //   book: true,
+    // },
+  })
+  return result
+}
 
-const deleteFromDB = async (id: string): Promise<ReviewAndRating> => {
-  const result = await prisma.reviewAndRating.delete({
+const deleteFromDB = async (id: string): Promise<Reviews> => {
+  const result = await prisma.reviews.delete({
     where: {
       id,
     },
-    include: {
-      user: true,
-      book: true,
-    },
-  });
-  return result;
-};
+    // include: {
+    //   user: true,
+    //   book: true,
+    // },
+  })
+  return result
+}
 
 export const ReviewAndRatingService = {
   insertIntoDB,
@@ -144,4 +139,4 @@ export const ReviewAndRatingService = {
   getByIdFromDB,
   updateIntoDB,
   deleteFromDB,
-};
+}
