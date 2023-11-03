@@ -15,9 +15,9 @@ model User {
   fullName       String   @map("full_name")
   email          String   @unique
   phoneNumber    String   @map("phone_number")
-  hashedPassword String
-  role           String @default("user")
-  imgSrc String?
+  hashedPassword String?
+  role           String   @default("user")
+  imgSrc         String?
   address        String?
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
@@ -33,20 +33,32 @@ model Listing {
   description String?
   imgUrl      String
   price       Int?
-  comments    String?
   category    String?
   createdAt   DateTime      @default(now()) @map("created_at")
   updatedAt   DateTime      @updatedAt @map("updated_at")
-  Reservation Reservation[]
 
+  reviews   Reviews? @relation(fields: [reviewsId], references: [id])
+  reviewsId String?
+
+  Reservation Reservation[]
   @@map("listings")
+}
+
+model Reviews {
+  id        String    @id @default(uuid())
+  comment      String
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime  @updatedAt @map("updated_at")
+  Listing   Listing[]
+
+  @@map("reviews")
 }
 
 model Reservation {
   id         String   @id @default(uuid())
   startDate  DateTime
   endDate    DateTime
-  status     String?   @default("pending") @map("appointment_status")
+  status     String?  @default("pending") @map("appointment_status")
   totalPrice Int?
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
@@ -61,13 +73,14 @@ model Reservation {
 }
 
 model Admin {
-  id             String @id @default(uuid())
-  fullName       String @map("full_name")
-  email          String @unique
-  phoneNumber    String @map("phone_number")
-  hashedPassword String
+  id             String  @id @default(uuid())
+  fullName       String  @map("full_name")
+  email          String  @unique
+  phoneNumber    String  @map("phone_number")
+  hashedPassword String?
   role           String
-  imgSrc String?
+  imgSrc         String?
+  address String?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -78,7 +91,8 @@ model Admin {
 model SuperAdmin {
   id             String @id @default(uuid())
   email          String @unique
-  hashedPassword String
+  role String @default("super_admin")
+  hashedPassword String?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

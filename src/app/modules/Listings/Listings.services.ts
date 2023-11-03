@@ -62,9 +62,9 @@ const getAllListings = async (
     andConditions.length > 0 ? { AND: andConditions } : {}
 
   const result = await prisma.listing.findMany({
-    // include: {
-    //   category: true,
-    // },
+    include: {
+      reviews: true,
+    },
     where: whereConditions,
     skip,
     take: limit,
@@ -94,35 +94,38 @@ const getSingleListing = async (id: string): Promise<Listing | null> => {
     where: {
       id: id,
     },
+    include: {
+      reviews: true,
+    },
   })
   return result
 }
 
-const updateCommentInListing = async (
-  appointmentId: string,
-  bookData: any,
-): Promise<any> => {
-  const appointment = await prisma.listing.findUnique({
-    where: {
-      id: appointmentId,
-    },
-  })
+// const updateCommentInListing = async (
+//   appointmentId: string,
+//   bookData: Reviews,
+// ): Promise<any> => {
+//   const appointment = await prisma.listing.findUnique({
+//     where: {
+//       id: appointmentId,
+//     },
+//   })
 
-  if (!appointment) {
-    throw new Error('Appointment does not exist')
-  }
+//   if (!appointment) {
+//     throw new Error('Appointment does not exist')
+//   }
 
-  const updatedComment = await prisma.listing.update({
-    where: {
-      id: appointmentId,
-    },
-    data: {
-      comments: bookData,
-    },
-  })
+//   const updatedComment = await prisma.listing.update({
+//     where: {
+//       id: appointmentId,
+//     },
+//     data: {
+//       data: bookData,
+//     },
+//   })
 
-  return updatedComment
-}
+//   return updatedComment
+// }
 
 const updateListing = async (
   id: string,
@@ -150,7 +153,7 @@ export const listingServices = {
   createListing,
   getAllListings,
   getSingleListing,
-  updateCommentInListing,
+  // updateCommentInListing,
   updateListing,
   deleteListing,
 }

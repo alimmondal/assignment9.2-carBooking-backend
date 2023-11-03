@@ -6,8 +6,8 @@ import { authRoutes } from '../modules/Auth/auth.route'
 
 import { listingRoutes } from '../modules/Listings/Listings.routes'
 import { paymentRoutes } from '../modules/Payments/payments.routes'
-import { categoryRoutes } from '../modules/category/category.routes'
 import { appointmentRoutes } from '../modules/reservations/reservations.routes'
+import { ReviewsRoutes } from '../modules/reviewRating/reviewRating.routes'
 import { userRoutes } from '../modules/users/users.routes'
 
 const router = express.Router()
@@ -28,8 +28,8 @@ const moduleRoutes: any[] = [
     route: listingRoutes,
   },
   {
-    path: '/categories',
-    route: categoryRoutes,
+    path: '/reviews',
+    route: ReviewsRoutes,
   },
   {
     path: '/payments',

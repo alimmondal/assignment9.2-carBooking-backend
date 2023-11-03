@@ -56,25 +56,25 @@ const getSingleListing = async (
   }
 }
 
-const updateCommentInListing = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    // const { id } = req.params
-    const id = req.params.id
-    const bookData = req.body.comments
-    const result = await listingServices.updateCommentInListing(id, bookData)
-    res.status(200).json({
-      status: 'success',
-      message: 'Comment updated successfully',
-      data: result,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
+// const updateCommentInListing = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => {
+//   try {
+//     // const { id } = req.params
+//     const id = req.params.id
+//     const bookData = req.body
+//     const result = await listingServices.updateCommentInListing(id, bookData)
+//     res.status(200).json({
+//       status: 'success',
+//       message: 'Comment updated successfully',
+//       data: result,
+//     })
+//   } catch (error) {
+//     next(error)
+//   }
+// }
 
 const updateListing = async (
   req: Request,
@@ -119,5 +119,5 @@ export const ListingController = {
   getSingleListing,
   updateListing,
   deleteListing,
-  updateCommentInListing,
+  // updateCommentInListing,
 }

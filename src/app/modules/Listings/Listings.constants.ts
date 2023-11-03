@@ -3,9 +3,9 @@ export const listingFilterableFields: string[] = [
   'name',
   'price',
   'description',
-  'category',
+  'reviews',
   'comments',
-  'categoryId',
+  'reviewsId',
   'createdAt',
   'updatedAt',
 ]
@@ -15,13 +15,14 @@ export const listingSearchableFields: string[] = [
   'name',
   'description',
   'price',
-  'category',
+  'reviews',
+  'reviewsId',
   'comments',
   'createdAt',
   'updatedAt',
 ]
 
-export const listingRelationalFields: string[] = ['categoryId']
+export const listingRelationalFields: string[] = ['reviewsId']
 export const listingRelationalFieldsMapper: { [key: string]: string } = {
-  categoryId: 'categoryId',
+  categoryId: 'reviewsId',
 }
