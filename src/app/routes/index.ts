@@ -9,6 +9,7 @@ import { paymentRoutes } from '../modules/Payments/payments.routes'
 import { appointmentRoutes } from '../modules/reservations/reservations.routes'
 import { ReviewsRoutes } from '../modules/reviewRating/reviewRating.routes'
 import { userRoutes } from '../modules/users/users.routes'
+import { superAdminRoutes } from '../modules/super-admin/super-admin.routes'
 
 const router = express.Router()
 
@@ -38,6 +39,10 @@ const moduleRoutes: any[] = [
   {
     path: '/admins',
     route: adminRoutes,
+  },
+  {
+    path: '/super-admins',
+    route: superAdminRoutes,
   },
   {
     path: '/auth',

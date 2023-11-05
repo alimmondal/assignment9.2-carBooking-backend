@@ -7,23 +7,16 @@ import { listingServices } from './Listings.services'
 
 import { listingFilterableFields } from './Listings.constants'
 
-const createListing = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    const { ...listingData } = req.body
-    const service = await listingServices.createListing(listingData)
-    res.status(200).json({
-      status: 'success',
-      message: 'Car listing created successfully',
-      data: service,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
+const createListing = catchAsync(async (req: Request, res: Response) => {
+  const { ...listingData } = req.body
+  const result = await listingServices.createListing(listingData)
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Car listing created successfully',
+    data: result,
+  })
+})
 
 const getAllListings = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, listingFilterableFields)
@@ -56,25 +49,24 @@ const getSingleListing = async (
   }
 }
 
-const updateComment = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-  try {
-    // const { id } = req.params
-    const id = req.params.id
-    const bookData = req.body.comments
-    const result = await listingServices.updateComment(id, bookData)
-    res.status(200).json({
-      status: 'success',
-      message: 'Comment updated successfully',
-      data: result,
-    })
-  } catch (error) {
-    next(error)
-  }
-}
+// const updateCommentInListing = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => {
+//   try {
+//     const id = req.params.id
+//     const bookData = req.body.comments
+//     const result = await listingServices.updateCommentInListing(id, bookData)
+//     res.status(200).json({
+//       status: 'success',
+//       message: 'Comment updated successfully',
+//       data: result,
+//     })
+//   } catch (error) {
+//     next(error)
+//   }
+// }
 
 const updateListing = async (
   req: Request,
@@ -119,5 +111,5 @@ export const ListingController = {
   getSingleListing,
   updateListing,
   deleteListing,
-  updateComment,
+  // updateCommentInListing,
 }

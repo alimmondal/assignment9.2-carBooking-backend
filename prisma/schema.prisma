@@ -28,21 +28,33 @@ model User {
 }
 
 model Listing {
-  id          String        @id @default(uuid())
-  name        String        @unique
+  id          String   @id @default(uuid())
+  name        String   @unique
   description String?
   imgUrl      String
   price       Int?
-  comments Json?
   category    String?
-  createdAt   DateTime      @default(now()) @map("created_at")
-  updatedAt   DateTime      @updatedAt @map("updated_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
   Reservation Reservation[]
+  Reviews     Reviews[] 
+  // @onDelete(CASCADE)
+
   @@map("listings")
 }
 
+model Reviews {
+  id        String   @id @default(uuid())
+  comment   String
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
 
+  listing   Listing? @relation(fields: [listingId], references: [id],onDelete: Cascade)
+  listingId String
+
+  @@map("reviews")
+}
 
 model Reservation {
   id         String   @id @default(uuid())
@@ -70,7 +82,7 @@ model Admin {
   hashedPassword String?
   role           String
   imgSrc         String?
-  address String?
+  address        String?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
@@ -79,10 +91,14 @@ model Admin {
 }
 
 model SuperAdmin {
-  id             String @id @default(uuid())
-  email          String @unique
-  role String @default("super_admin")
+  id             String  @id @default(uuid())
+  fullName       String?  @map("full_name")
+  email          String  @unique
+  phoneNumber    String?  @map("phone_number")
   hashedPassword String?
+  role           String
+  imgSrc         String?
+  address        String?
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")

@@ -4,12 +4,7 @@ const router = express.Router()
 
 router.get('/', ReviewRatingController.getAllFromDB)
 router.get('/:id', ReviewRatingController.getByIdFromDB)
-router.post(
-  '/',
-  // auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),
-  // validateRequest(ReviewValidation.create),
-  ReviewRatingController.insertIntoDB,
-)
+router.post('/', ReviewRatingController.insertIntoDB)
 router.patch(
   '/:id',
   // auth(ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.ADMIN),

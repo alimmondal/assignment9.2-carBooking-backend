@@ -11,17 +11,9 @@ import {
 } from './Listings.constants'
 import { ICarListFilterRequest } from './Listings.interface'
 
-const createListing = async (payload: Listing): Promise<Listing> => {
-  payload.comments = JSON.stringify(payload.comments)
-
-  const adjustedPayload = {
-    ...payload,
-    comments: {
-      value: payload.comments,
-    },
-  }
+const createListing = async (listing: Listing): Promise<Listing> => {
   const result = await prisma.listing.create({
-    data: adjustedPayload,
+    data: listing,
   })
   return result
 }
@@ -70,6 +62,9 @@ const getAllListings = async (
     andConditions.length > 0 ? { AND: andConditions } : {}
 
   const result = await prisma.listing.findMany({
+    // include: {
+    //   category: true,
+    // },
     where: whereConditions,
     skip,
     take: limit,
@@ -99,62 +94,22 @@ const getSingleListing = async (id: string): Promise<Listing | null> => {
     where: {
       id: id,
     },
+    include: {
+      Reviews: true,
+    },
   })
   return result
 }
 
-const updateComment = async (
-  appointmentId: string,
-  payload: Listing,
-): Promise<any> => {
-  payload.comments = JSON.stringify(payload.comments)
-
-  // const adjustedPayload = {
-  //   ...payload,
-  //   comments: {
-  //     value: payload.comments,
-  //   },
-  // }
-
-  const appointment = await prisma.listing.findUnique({
-    where: {
-      id: appointmentId,
-    },
-  })
-
-  if (!appointment) {
-    throw new Error('Appointment does not exist')
-  }
-
-  const updatedComment = await prisma.listing.update({
-    where: {
-      id: appointmentId,
-    },
-    data: {
-      comments: payload,
-    },
-  })
-
-  return updatedComment
-}
-
 const updateListing = async (
   id: string,
-  payload: Listing,
+  listings: Listing,
 ): Promise<Listing> => {
-  payload.comments = JSON.stringify(payload.comments)
-
-  const adjustedPayload = {
-    ...payload,
-    comments: {
-      value: payload.comments,
-    },
-  }
   const result = await prisma.listing.update({
     where: {
       id: id,
     },
-    data: adjustedPayload,
+    data: listings,
   })
   return result
 }
@@ -164,6 +119,9 @@ const deleteListing = async (id: string): Promise<Listing> => {
     where: {
       id: id,
     },
+    include: {
+      Reviews: true,
+    },
   })
   return result
 }
@@ -172,7 +130,7 @@ export const listingServices = {
   createListing,
   getAllListings,
   getSingleListing,
-  updateComment,
+  // updateCommentInListing,
   updateListing,
   deleteListing,
 }
