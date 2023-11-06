@@ -1,4 +1,4 @@
-import { Listing, Prisma } from '@prisma/client'
+import { Listing } from '@prisma/client'
 import prisma from '../../../shared/prisma'
 import { paginationHelpers } from '../../helpers/paginationHelper'
 import { IGenericResponse } from '../../interfaces/common'
@@ -58,12 +58,19 @@ const getAllListings = async (
     })
   }
 
-  const whereConditions: Prisma.ListingWhereInput =
-    andConditions.length > 0 ? { AND: andConditions } : {}
+  // const whereConditions: Prisma.ListingWhereInput =
+  //   andConditions.length > 0 ? { AND: andConditions } : {}
+
+  const whereConditions =
+    andConditions.length > 0
+      ? {
+          AND: andConditions,
+        }
+      : {}
 
   const result = await prisma.listing.findMany({
     // include: {
-    //   category: true,
+    //   Reviews: true,
     // },
     where: whereConditions,
     skip,
