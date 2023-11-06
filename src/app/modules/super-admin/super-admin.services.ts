@@ -1,4 +1,4 @@
-import { Admin, Prisma } from '@prisma/client'
+import { SuperAdmin, Prisma } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import prisma from '../../../shared/prisma'
 import { paginationHelpers } from '../../helpers/paginationHelper'
@@ -8,13 +8,13 @@ import { userSearchableFields } from '../users/user.constants'
 import { IUserFilterRequest } from '../users/user.interface'
 
 const createSuperAdmin = async (
-  admin: Admin,
+  admin: SuperAdmin,
   password: any,
-): Promise<Admin> => {
+): Promise<SuperAdmin> => {
   const { fullName, email, phoneNumber, role } = admin
   const saltRounds = 12
   const hashedPassword = await bcrypt.hash(password, saltRounds)
-  const result = await prisma.admin.create({
+  const result = await prisma.superAdmin.create({
     data: {
       fullName,
       email,
@@ -29,7 +29,7 @@ const createSuperAdmin = async (
 const getAllSuperAdmins = async (
   filters: IUserFilterRequest,
   options: IPaginationOptions,
-): Promise<IGenericResponse<Admin[]>> => {
+): Promise<IGenericResponse<SuperAdmin[]>> => {
   const { limit, page, skip } = paginationHelpers.calculatePagination(options)
   const { searchTerm, ...filterData } = filters
 
@@ -56,10 +56,10 @@ const getAllSuperAdmins = async (
       }),
     })
   }
-  const whereConditions: Prisma.AdminWhereInput =
+  const whereConditions: Prisma.SuperAdminWhereInput =
     andConditions.length > 0 ? { AND: andConditions } : {}
 
-  const result = await prisma.admin.findMany({
+  const result = await prisma.superAdmin.findMany({
     where: whereConditions,
     skip,
     take: limit,
@@ -70,7 +70,7 @@ const getAllSuperAdmins = async (
             fullName: 'desc',
           },
   })
-  const total = await prisma.admin.count({
+  const total = await prisma.superAdmin.count({
     where: whereConditions,
   })
 
@@ -84,8 +84,8 @@ const getAllSuperAdmins = async (
   }
 }
 
-const getSingleSuperAdmin = async (id: string): Promise<Admin | null> => {
-  const result = await prisma.admin.findUnique({
+const getSingleSuperAdmin = async (id: string): Promise<SuperAdmin | null> => {
+  const result = await prisma.superAdmin.findUnique({
     where: {
       id: id,
     },
@@ -93,8 +93,11 @@ const getSingleSuperAdmin = async (id: string): Promise<Admin | null> => {
   return result
 }
 
-const updateSuperAdmin = async (id: string, admin: Admin): Promise<Admin> => {
-  const result = await prisma.admin.update({
+const updateSuperAdmin = async (
+  id: string,
+  admin: SuperAdmin,
+): Promise<SuperAdmin> => {
+  const result = await prisma.superAdmin.update({
     where: {
       id: id,
     },
@@ -103,8 +106,8 @@ const updateSuperAdmin = async (id: string, admin: Admin): Promise<Admin> => {
   return result
 }
 
-const deleteSuperAdmin = async (id: string): Promise<Admin> => {
-  const result = await prisma.admin.delete({
+const deleteSuperAdmin = async (id: string): Promise<SuperAdmin> => {
+  const result = await prisma.superAdmin.delete({
     where: {
       id: id,
     },

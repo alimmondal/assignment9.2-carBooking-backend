@@ -1,6 +1,7 @@
-import bcrypt from 'bcrypt'
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import bcrypt from 'bcrypt'
 import { Secret } from 'jsonwebtoken'
+import config from '../../../config'
 import prisma from '../../../shared/prisma'
 import { jwtHelpers } from '../../helpers/jwtHelper'
 
@@ -14,24 +15,20 @@ const loginUser = async (payload: any): Promise<any> => {
     },
   })
 
-  // const doctor = await prisma.doctor.findUnique({
-  //   where: { email },
-  // })
+  const superAdmin = await prisma.superAdmin.findUnique({
+    where: { email },
+  })
   const user = await prisma.user.findUnique({
     where: { email },
   })
 
-  if (!admin && !user) {
+  if (!admin && !user && !superAdmin) {
     throw new Error('User does not exist')
   }
 
-  if (admin || user) {
-    isUserExist = admin || user
+  if (admin || user || superAdmin) {
+    isUserExist = admin || user || superAdmin
   }
-
-  // if (isUserExist && isUserExist.password !== password) {
-  //   throw new Error('Password is incorrect')
-  // }
 
   const passwordMatches = await bcrypt.compare(
     password,
@@ -56,16 +53,25 @@ const loginUser = async (payload: any): Promise<any> => {
     process.env.JWT_SECRET as Secret,
     process.env.EXPIRES_IN as string,
   )
-  return { accessToken }
+  //   create token
+  const refreshToken = jwtHelpers.createToken(
+    payloadData,
+    config.jwt.refresh_secret as Secret,
+    config.jwt.refresh_expires_in as string,
+  )
+  return { accessToken, refreshToken }
 }
 
 const refreshToken = async (token: string) => {
-  if (!token) {
-    throw new Error('Token is required')
-  }
+  // if (!token) {
+  //   throw new Error('Token is required')
+  // }
 
-  const decodedToken = jwtHelpers.decodeToken(token)
-  const { email, role, phoneNumber, fullName, id } = decodedToken
+  const verifiedToken = jwtHelpers.verifyToken(
+    token,
+    config.jwt.refresh_secret as Secret,
+  )
+  const { email, role, phoneNumber, fullName, id } = verifiedToken
   if (!email || !role || !phoneNumber || !fullName || !id) {
     throw new Error('Invalid token')
   }
@@ -76,14 +82,14 @@ const refreshToken = async (token: string) => {
     },
   })
 
-  // const doctor = await prisma.doctor.findUnique({
-  //   where: { email },
-  // })
+  const superAdmin = await prisma.superAdmin.findUnique({
+    where: { email },
+  })
   const user = await prisma.user.findUnique({
     where: { email },
   })
 
-  if (!admin && !user) {
+  if (!admin && !user && !superAdmin) {
     throw new Error('User does not exist')
   }
   const payloadData = {
@@ -95,8 +101,8 @@ const refreshToken = async (token: string) => {
   }
   const newAccessToken = jwtHelpers.createToken(
     payloadData,
-    process.env.JWT_SECRET as Secret,
-    process.env.EXPIRES_IN as string,
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string,
   )
   return {
     accessToken: newAccessToken,
