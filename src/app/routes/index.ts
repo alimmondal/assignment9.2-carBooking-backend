@@ -5,11 +5,10 @@ import { adminRoutes } from '../modules/Admins/admins.routes'
 import { authRoutes } from '../modules/Auth/auth.route'
 
 import { listingRoutes } from '../modules/Listings/Listings.routes'
-import { paymentRoutes } from '../modules/Payments/payments.routes'
 import { appointmentRoutes } from '../modules/reservations/reservations.routes'
 import { ReviewsRoutes } from '../modules/reviewRating/reviewRating.routes'
-import { userRoutes } from '../modules/users/users.routes'
 import { superAdminRoutes } from '../modules/super-admin/super-admin.routes'
+import { userRoutes } from '../modules/users/users.routes'
 
 const router = express.Router()
 
@@ -32,10 +31,10 @@ const moduleRoutes: any[] = [
     path: '/reviews',
     route: ReviewsRoutes,
   },
-  {
-    path: '/payments',
-    route: paymentRoutes,
-  },
+  // {
+  //   path: '/payments',
+  //   route: paymentRoutes,
+  // },
   {
     path: '/admins',
     route: adminRoutes,
