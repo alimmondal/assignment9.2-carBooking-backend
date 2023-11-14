@@ -25,9 +25,13 @@ const getAllListings = async (
   const { limit, page, skip } = paginationHelpers.calculatePagination(options)
   const { searchTerm, ...filterData } = filters
 
+  console.log(searchTerm)
+  console.log(filterData)
+
   const andConditions = []
 
   if (searchTerm) {
+    console.log(searchTerm)
     andConditions.push({
       OR: listingSearchableFields.map(field => ({
         [field]: {
@@ -57,9 +61,6 @@ const getAllListings = async (
       }),
     })
   }
-
-  // const whereConditions: Prisma.ListingWhereInput =
-  //   andConditions.length > 0 ? { AND: andConditions } : {}
 
   const whereConditions =
     andConditions.length > 0
@@ -137,7 +138,6 @@ export const listingServices = {
   createListing,
   getAllListings,
   getSingleListing,
-  // updateCommentInListing,
   updateListing,
   deleteListing,
 }

@@ -1,6 +1,6 @@
 export const userFilterableFields: string[] = [
   'searchTerm',
-  'userId',
+  // 'userId',
   'email',
   'phoneNumber',
   'address',
@@ -12,7 +12,6 @@ export const userSearchableFields: string[] = [
   'fullName',
   'email',
   'phoneNumber',
-  'userId',
   'role',
   'address',
 ]

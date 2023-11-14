@@ -19,7 +19,7 @@ model User {
   role           String   @default("user")
   imgSrc         String?
   address        String?
-  searchTerm   String?
+ 
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @updatedAt @map("updated_at")
 
@@ -38,7 +38,7 @@ model Listing {
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @updatedAt @map("updated_at")
 
-  searchTerm   String?
+  
   Reservation Reservation[]
   Reviews     Reviews[] 
   // @onDelete(CASCADE)
@@ -64,7 +64,7 @@ model Reservation {
   endDate    DateTime
   status     String?  @default("pending") @map("appointment_status")
   totalPrice Int?
-  searchTerm   String?
+  
   createdAt  DateTime @default(now()) @map("created_at")
   updatedAt  DateTime @updatedAt @map("updated_at")
 
@@ -86,7 +86,7 @@ model Admin {
   role           String
   imgSrc         String?
   address        String?
-  searchTerm   String?
+  
 
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
